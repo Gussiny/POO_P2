@@ -69,7 +69,7 @@ public class Deduccion {
 	private int nivelImpuestos;
 	
 
-	private	Double	ingresoAnual,
+	private	double	ingresoAnual,
 					aguinaldoExcento,
 					aguinaldoGravado,
 					primaExcenta,
@@ -78,7 +78,7 @@ public class Deduccion {
 					maxDeducible,
 					deduccionEscolar,
 					totalDeduccionesSinRetiro,
-					deduccionPermitidaDiezPC,
+					deduccionPermitida,
 					montoISR,
 					pagoExcedente,
 					totalAPagar;
@@ -115,25 +115,14 @@ public class Deduccion {
 		else {
 			setDeduccionEscolar(0.0);
 		}
-		setTotalDeduccionesSinRetiro(this.contribuyente.getGastosMedicos()+this.contribuyente.getGastosFunerarios()+this.contribuyente.getGastosSGMM()+this.contribuyente.getGastosHipotecarios()+this.contribuyente.getDonativos()+this.deduccionEscolar);
-		setDeduccionPermitidaDiezPC(ingresoAnual/10);
-		double montoISR;
-		if(deduccionPermitidaDiezPC<totalDeduccionesSinRetiro) {
-			if(deduccionPermitidaDiezPC<this.contribuyente.getAportacionRetiro()) {
-				montoISR=this.totalIngresosGravan-deduccionPermitidaDiezPC*2;
-			}
-			else {
-				montoISR=this.totalIngresosGravan-deduccionPermitidaDiezPC-this.contribuyente.getAportacionRetiro();
-			}
-		}
-		else {
-			montoISR=this.totalIngresosGravan-totalDeduccionesSinRetiro-this.contribuyente.getAportacionRetiro();
-		}
-		setMontoISR(montoISR);
+		setTotalDeduccionesSinRetiro(this.contribuyente.getGastosMedicos()+this.contribuyente.getGastosFunerarios()+this.contribuyente.getGastosSGMM()+this.contribuyente.getGastosHipotecarios()+this.contribuyente.getDonativos()+this.deduccionEscolar+this.contribuyente.getTransporteEscolar());
+		setDeduccionPermitida(this.totalDeduccionesSinRetiro,this.contribuyente.getAportacionRetiro());
+		setMontoISR(this.totalIngresosGravan-this.deduccionPermitida);
 		for(nivelImpuestos=0;nivelImpuestos<PORCENTAJE_EXCEDENTE.length && this.montoISR>LIM_SUP[nivelImpuestos];nivelImpuestos++);
 		setPagoExcedente((this.montoISR-LIM_INF[nivelImpuestos])*PORCENTAJE_EXCEDENTE[nivelImpuestos]);
 		setTotalAPagar(CUOTA_FIJA[nivelImpuestos]+pagoExcedente);
 	}
+
 
 	public Persona getContribuyente() {
 		return contribuyente;
@@ -143,7 +132,7 @@ public class Deduccion {
 		this.contribuyente = contribuyente;
 	}
 
-	public Double getIngresoAnual() {
+	public double getIngresoAnual() {
 		return ingresoAnual;
 	}
 
@@ -151,7 +140,7 @@ public class Deduccion {
 		this.ingresoAnual = ingresoAnual;
 	}
 
-	public Double getAguinaldoExcento() {
+	public double getAguinaldoExcento() {
 		return aguinaldoExcento;
 	}
 
@@ -159,7 +148,7 @@ public class Deduccion {
 		this.aguinaldoExcento = aguinaldoExcento;
 	}
 
-	public Double getAguinaldoGravado() {
+	public double getAguinaldoGravado() {
 		return aguinaldoGravado;
 	}
 
@@ -167,7 +156,7 @@ public class Deduccion {
 		this.aguinaldoGravado = aguinaldoGravado;
 	}
 
-	public Double getPrimaExcenta() {
+	public double getPrimaExcenta() {
 		return primaExcenta;
 	}
 
@@ -175,7 +164,7 @@ public class Deduccion {
 		this.primaExcenta = primaExcenta;
 	}
 
-	public Double getPrimaGravada() {
+	public double getPrimaGravada() {
 		return primaGravada;
 	}
 
@@ -183,7 +172,7 @@ public class Deduccion {
 		this.primaGravada = primaGravada;
 	}
 
-	public Double getTotalIngresosGravan() {
+	public double getTotalIngresosGravan() {
 		return totalIngresosGravan;
 	}
 
@@ -191,11 +180,11 @@ public class Deduccion {
 		this.totalIngresosGravan = totalIngresosGravan;
 	}
 
-	public Double getMaxDeducible() {
+	public double getMaxDeducible() {
 		return maxDeducible;
 	}
 
-	public Double getDeduccionEscolar() {
+	public double getDeduccionEscolar() {
 		return deduccionEscolar;
 	}
 
@@ -211,7 +200,7 @@ public class Deduccion {
 		this.nivelImpuestos = nivelImpuestos;
 	}
 
-	public Double getTotalDeduccionesSinRetiro() {
+	public double getTotalDeduccionesSinRetiro() {
 		return totalDeduccionesSinRetiro;
 	}
 
@@ -219,15 +208,27 @@ public class Deduccion {
 		this.totalDeduccionesSinRetiro = totalDeduccionesSinRetiro;
 	}
 
-	public Double getDeduccionPermitidaDiezPC() {
-		return deduccionPermitidaDiezPC;
+	public double getDeduccionPermitida() {
+		return deduccionPermitida;
 	}
 
-	public void setDeduccionPermitidaDiezPC(Double deduccionPermitidaDiezPC) {
-		this.deduccionPermitidaDiezPC = deduccionPermitidaDiezPC;
+	public void setDeduccionPermitida(double deduccion10,double deduccionSeguro) {
+		double totalIngresosDiezPC=(this.ingresoAnual+this.contribuyente.getAguinaldoRecibido()+this.contribuyente.getPrimaVacacionalRecibida())/10;
+		if(totalIngresosDiezPC<deduccion10) {
+			this.deduccionPermitida=totalIngresosDiezPC;
+					if(totalIngresosDiezPC<deduccionSeguro) {
+						this.deduccionPermitida+=totalIngresosDiezPC;
+					}
+					else {
+						this.deduccionPermitida+=deduccionSeguro;
+					}
+		}
+		else {
+			this.deduccionPermitida=deduccion10+deduccionSeguro;
+		}
 	}
 
-	public Double getMontoISR() {
+	public double getMontoISR() {
 		return montoISR;
 	}
 
@@ -235,7 +236,7 @@ public class Deduccion {
 		this.montoISR = montoISR;
 	}
 
-	public Double getPagoExcedente() {
+	public double getPagoExcedente() {
 		return pagoExcedente;
 	}
 
@@ -243,7 +244,7 @@ public class Deduccion {
 		this.pagoExcedente = pagoExcedente;
 	}
 
-	public Double getTotalAPagar() {
+	public double getTotalAPagar() {
 		return totalAPagar;
 	}
 

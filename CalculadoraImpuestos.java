@@ -81,7 +81,7 @@ public class CalculadoraImpuestos {
 		}
 		linea+=persona.getColegiatura()+",";
 		linea+=deduccion.getTotalDeduccionesSinRetiro()+",";
-		linea+=deduccion.getDeduccionPermitidaDiezPC()+",";
+		linea+=deduccion.getDeduccionPermitida()+",";
 		linea+=deduccion.getMontoISR()+",";
 		linea+=deduccion.CUOTA_FIJA[deduccion.getNivelImpuestos()]+",";
 		linea+=100*deduccion.PORCENTAJE_EXCEDENTE[deduccion.getNivelImpuestos()]+"%,";;
