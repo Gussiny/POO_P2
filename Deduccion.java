@@ -104,9 +104,6 @@ public class Deduccion {
 			setPrimaGravada(0.0);
 		}
 		setTotalIngresosGravan(ingresoAnual+aguinaldoGravado+primaGravada);
-		for(nivelImpuestos=0;nivelImpuestos<PORCENTAJE_EXCEDENTE.length && totalIngresosGravan>LIM_SUP[nivelImpuestos];nivelImpuestos++) {
-			
-		}
 		if(this.contribuyente.getNivelEducativo()!=-1) {
 			if(this.contribuyente.getColegiatura()>MAX_DEDUCCION_ESCOLAR[this.contribuyente.getNivelEducativo()]) {
 				setDeduccionEscolar(MAX_DEDUCCION_ESCOLAR[this.contribuyente.getNivelEducativo()]);
@@ -126,13 +123,14 @@ public class Deduccion {
 				montoISR=this.totalIngresosGravan-deduccionPermitidaDiezPC*2;
 			}
 			else {
-				montoISR=this.totalIngresosGravan-deduccionPermitidaDiezPC+this.contribuyente.getAportacionRetiro();
+				montoISR=this.totalIngresosGravan-deduccionPermitidaDiezPC-this.contribuyente.getAportacionRetiro();
 			}
 		}
 		else {
-			montoISR=this.totalIngresosGravan-totalDeduccionesSinRetiro+this.contribuyente.getAportacionRetiro();
+			montoISR=this.totalIngresosGravan-totalDeduccionesSinRetiro-this.contribuyente.getAportacionRetiro();
 		}
 		setMontoISR(montoISR);
+		for(nivelImpuestos=0;nivelImpuestos<PORCENTAJE_EXCEDENTE.length && this.montoISR>LIM_SUP[nivelImpuestos];nivelImpuestos++);
 		setPagoExcedente((this.montoISR-LIM_INF[nivelImpuestos])*PORCENTAJE_EXCEDENTE[nivelImpuestos]);
 		setTotalAPagar(CUOTA_FIJA[nivelImpuestos]+pagoExcedente);
 	}
