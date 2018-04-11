@@ -24,84 +24,29 @@ public class CalculadoraImpuestos {
 		campo=st.nextToken();
 		persona.setRfc(campo);
 		campo=st.nextToken();
-		if(!campo.equals("")) {
-			persona.setSueldoMensual(0.0);
-		}
-		else {
-			persona.setSueldoMensual(Double.parseDouble(campo));
-		}
+		persona.setSueldoMensual(Double.parseDouble(campo));
 		campo=st.nextToken();
-		if(!campo.equals("")) {
 		persona.setAguinaldoRecibido(Double.parseDouble(campo));
-		}
-		else {
-			persona.setAguinaldoRecibido(0.0);
-		}
 		campo=st.nextToken();
-		if(!campo.equals("")) {
-			persona.setPrimaVacacionalRecibida(Double.parseDouble(campo));
-		}
-		else {
-			persona.setPrimaVacacionalRecibida(0.0);
-		}
+		persona.setPrimaVacacionalRecibida(Double.parseDouble(campo));
 		campo=st.nextToken();
-		if(!campo.equals("")) {
-			persona.setGastosMedicos(Double.parseDouble(campo));
-		}
-		else {
-			persona.setGastosMedicos(0.0);
-		}
+		persona.setGastosMedicos(Double.parseDouble(campo));
 		campo=st.nextToken();
-		if(!campo.equals("")) {
-			persona.setGastosFunerarios(Double.parseDouble(campo));
-		}
-		else {
-			persona.setGastosFunerarios(0.0);	
-		}
+		persona.setGastosFunerarios(Double.parseDouble(campo));
 		campo=st.nextToken();
-		if(!campo.equals("")) {
-			persona.setGastosSGMM(Double.parseDouble(campo));
-		}
-		else {
-			persona.setGastosSGMM(0.0);
-		}
+		persona.setGastosSGMM(Double.parseDouble(campo));
 		campo=st.nextToken();
-		if(!campo.equals("")) {
-			persona.setGastosHipotecarios(Double.parseDouble(campo));
-		}
-		else {
-			persona.setGastosHipotecarios(0.0);
-		}
+		persona.setGastosHipotecarios(Double.parseDouble(campo));
 		campo=st.nextToken();
-		if(!campo.equals("")){
-			persona.setDonativos(Double.parseDouble(campo));
-		}
-		else {
-			persona.setDonativos(0.0);
-		}
+		persona.setDonativos(Double.parseDouble(campo));
 		campo=st.nextToken();
-		if(!campo.equals("")) {
-			persona.setAportacionRetiro(Double.parseDouble(campo));
-		}
-		else {
-			persona.setAportacionRetiro(0.0);
-		}
+		persona.setAportacionRetiro(Double.parseDouble(campo));
 		campo=st.nextToken();
-		if(!campo.equals("")) {
-			persona.setTransporteEscolar(Double.parseDouble(campo));
-		}
-		else {
-			persona.setTransporteEscolar(0.0);
-		}
+		persona.setTransporteEscolar(Double.parseDouble(campo));
 		campo=st.nextToken();
 		persona.setNivelEducativo(campo);
-		if(!campo.equals("")) {
-			persona.setColegiatura(Double.parseDouble(campo));
-		}
-		else {
-			persona.setColegiatura(0.0);
-		}
 		campo=st.nextToken();
+		persona.setColegiatura(Double.parseDouble(campo));
 		deduccion=new Deduccion(persona);
 	}
 	
@@ -117,22 +62,29 @@ public class CalculadoraImpuestos {
 		linea+=persona.getPrimaVacacionalRecibida()+",";
 		linea+=deduccion.getPrimaExcenta()+",";
 		linea+=deduccion.getPrimaGravada()+",";
-		linea+=deduccion.getTotalIngresosGravan();
+		linea+=deduccion.getTotalIngresosGravan()+",";
 		linea+=persona.getGastosMedicos()+",";
 		linea+=persona.getGastosFunerarios()+",";
 		linea+=persona.getGastosSGMM()+",";
 		linea+=persona.getGastosHipotecarios()+",";
 		linea+=persona.getDonativos()+",";
 		linea+=persona.getAportacionRetiro()+",";
-		linea+=persona.getTransporteEscolar()+",";
-		linea+=gradoEducativo[persona.getNivelEducativo()]+",";
-		linea+=deduccion.MAX_DEDUCCION_ESCOLAR[persona.getNivelEducativo()]+",";
+		if(persona.getNivelEducativo()!=-1) {
+			linea+=persona.getTransporteEscolar()+",";	
+			linea+=gradoEducativo[persona.getNivelEducativo()]+",";
+			linea+=deduccion.MAX_DEDUCCION_ESCOLAR[persona.getNivelEducativo()]+",";
+		}
+		else {
+			linea+="0.0,";
+			linea+="Ninguno,";
+			linea+="0.0,";
+		}
 		linea+=persona.getColegiatura()+",";
 		linea+=deduccion.getTotalDeduccionesSinRetiro()+",";
 		linea+=deduccion.getDeduccionPermitidaDiezPC()+",";
 		linea+=deduccion.getMontoISR()+",";
 		linea+=deduccion.CUOTA_FIJA[deduccion.getNivelImpuestos()]+",";
-		linea+=deduccion.PORCENTAJE_EXCEDENTE[deduccion.getNivelImpuestos()]+",";;
+		linea+=100*deduccion.PORCENTAJE_EXCEDENTE[deduccion.getNivelImpuestos()]+"%,";;
 		linea+=deduccion.getPagoExcedente()+",";
 		linea+=deduccion.getTotalAPagar();
 		return linea;

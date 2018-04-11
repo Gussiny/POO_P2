@@ -21,11 +21,6 @@ public class Persona {
 		
 		
 	}
-	
-
-	public static void main(String[] args) {
-		
-	}
 
 	public String getNombre() {
 		return nombre;
@@ -150,9 +145,8 @@ public class Persona {
 		return nivelEducativo;
 	}
 
-
 	public void setNivelEducativo(String nivelEducativo) {
-		String niveles[]= {"","Primaria","Secundaria","Preparatoria"};
+		String niveles[]= {"Preescolar","Primaria","Secundaria","Preparatoria"};
 		this.nivelEducativo=-1;
 		for(int i=0;i<niveles.length;i++) {
 			if(niveles[i].equalsIgnoreCase(nivelEducativo)) {

@@ -88,43 +88,49 @@ public class Deduccion {
 		setContribuyente(contribuyente);
 		setIngresoAnual(this.contribuyente.getSueldoMensual()*12);
 		if(this.contribuyente.getAguinaldoRecibido()>this.contribuyente.getSueldoMensual()/2) {
-			setAguinaldoExcento(this.contribuyente.getAguinaldoRecibido()-this.contribuyente.getSueldoMensual()/2);
-			setAguinaldoGravado(this.contribuyente.getAguinaldoRecibido()-aguinaldoExcento);
+			setAguinaldoGravado(this.contribuyente.getAguinaldoRecibido()-this.contribuyente.getSueldoMensual()/2);
+			setAguinaldoExcento(this.contribuyente.getAguinaldoRecibido()-aguinaldoGravado);
 		}
 		else {
 			setAguinaldoExcento(this.contribuyente.getAguinaldoRecibido());
 			setAguinaldoGravado(0.0);
 		}
 		if(this.contribuyente.getPrimaVacacionalRecibida()>MAX_PRIMA_EXCENTA) {
-			setPrimaExcenta(this.contribuyente.getPrimaVacacionalRecibida()-MAX_PRIMA_EXCENTA);
-			setPrimaGravada(this.contribuyente.getPrimaVacacionalRecibida()-this.primaExcenta);
+			setPrimaGravada(this.contribuyente.getPrimaVacacionalRecibida()-MAX_PRIMA_EXCENTA);
+			setPrimaExcenta(MAX_PRIMA_EXCENTA);
 		}
 		else {
 			setPrimaExcenta(this.contribuyente.getPrimaVacacionalRecibida());
 			setPrimaGravada(0.0);
 		}
 		setTotalIngresosGravan(ingresoAnual+aguinaldoGravado+primaGravada);
-		nivelImpuestos=0;
-		for(;nivelImpuestos<PORCENTAJE_EXCEDENTE.length && totalIngresosGravan>LIM_INF[nivelImpuestos];nivelImpuestos++)
-		if(this.contribuyente.getColegiatura()>MAX_DEDUCCION_ESCOLAR[this.contribuyente.getNivelEducativo()]) {
-			setDeduccionEscolar(MAX_DEDUCCION_ESCOLAR[this.contribuyente.getNivelEducativo()]);
+		for(nivelImpuestos=0;nivelImpuestos<PORCENTAJE_EXCEDENTE.length && totalIngresosGravan>LIM_SUP[nivelImpuestos];nivelImpuestos++) {
+			
+		}
+		if(this.contribuyente.getNivelEducativo()!=-1) {
+			if(this.contribuyente.getColegiatura()>MAX_DEDUCCION_ESCOLAR[this.contribuyente.getNivelEducativo()]) {
+				setDeduccionEscolar(MAX_DEDUCCION_ESCOLAR[this.contribuyente.getNivelEducativo()]);
+			}
+			else {
+				setDeduccionEscolar(this.contribuyente.getColegiatura());
+			}
 		}
 		else {
-			setDeduccionEscolar(this.contribuyente.getColegiatura());
+			setDeduccionEscolar(0.0);
 		}
 		setTotalDeduccionesSinRetiro(this.contribuyente.getGastosMedicos()+this.contribuyente.getGastosFunerarios()+this.contribuyente.getGastosSGMM()+this.contribuyente.getGastosHipotecarios()+this.contribuyente.getDonativos()+this.deduccionEscolar);
 		setDeduccionPermitidaDiezPC(ingresoAnual/10);
 		double montoISR;
 		if(deduccionPermitidaDiezPC<totalDeduccionesSinRetiro) {
 			if(deduccionPermitidaDiezPC<this.contribuyente.getAportacionRetiro()) {
-				montoISR=deduccionPermitidaDiezPC*2;
+				montoISR=this.totalIngresosGravan-deduccionPermitidaDiezPC*2;
 			}
 			else {
-				montoISR=deduccionPermitidaDiezPC+this.contribuyente.getAportacionRetiro();
+				montoISR=this.totalIngresosGravan-deduccionPermitidaDiezPC+this.contribuyente.getAportacionRetiro();
 			}
 		}
 		else {
-			montoISR=totalDeduccionesSinRetiro+this.contribuyente.getAportacionRetiro();
+			montoISR=this.totalIngresosGravan-totalDeduccionesSinRetiro+this.contribuyente.getAportacionRetiro();
 		}
 		setMontoISR(montoISR);
 		setPagoExcedente((this.montoISR-LIM_INF[nivelImpuestos])*PORCENTAJE_EXCEDENTE[nivelImpuestos]);
