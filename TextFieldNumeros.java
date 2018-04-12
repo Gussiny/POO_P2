@@ -6,7 +6,13 @@ import java.awt.event.KeyListener;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+//José Fausto Rodriguez Herrera A01634943
+
 public class TextFieldNumeros extends JTextField{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JLabel labelAdvertencia;
 	
 	public TextFieldNumeros(JLabel labelAdvertencia) {
@@ -15,14 +21,14 @@ public class TextFieldNumeros extends JTextField{
 		this.labelAdvertencia.setForeground(Color.RED);
 		this.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyPressed(KeyEvent e) {
+			public void keyReleased(KeyEvent e) {
 				
 				try{
 					Double.parseDouble(TextFieldNumeros.this.getText());
 					TextFieldNumeros.this.labelAdvertencia.setText("");
 				}
 				catch(NumberFormatException nfe){
-					TextFieldNumeros.this.labelAdvertencia.setText("Ingrese solo numeros");;
+					TextFieldNumeros.this.labelAdvertencia.setText("Ingrese solo numeros");
 				}
 			}
 		});
